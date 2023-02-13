@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package study.proto.member;
+
+option go_package = "ent-study/proto/v1/member";
+
+service MemberService {
+  rpc JoinMember(JoinMember.Request) returns (JoinMember.Response);
+}
+
+message JoinMember {
+  message Request {
+    string account_id = 1;
+    string password= 2;
+  }
+
+  message Response {
+    string code = 1;
+    string message = 2;
+  }
+}

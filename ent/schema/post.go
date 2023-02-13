@@ -17,22 +17,18 @@ type Post struct {
 // Fields of the Post.
 func (Post) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("id").Comment("Post table PK").
+		field.Int("id").
 			StorageKey("post_id"),
-
-		field.String("title").Comment("게시글의 타이틀"),
-
-		field.String("content").Comment("게시글의 내용"),
-
-		field.Time("created_at").Comment("게시글 생성 시간").
+		field.String("title"),
+		field.String("content"),
+		field.Time("created_at").
 			Default(time.Now).
-			Immutable(), // 불변 필드
-
-		field.Time("updated_at").Comment("게시글 수정 시간").
+			// 불변 필드
+			Immutable(),
+		field.Time("updated_at").
 			Optional().
 			UpdateDefault(time.Now),
-
-		field.Time("deleted_at").Comment("게시글 삭제 시간").
+		field.Time("deleted_at").
 			Optional(),
 	}
 }
@@ -46,9 +42,12 @@ func (Post) Annotations() []schema.Annotation {
 // Edges of the Post.
 func (Post) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("member", Member.Type). // ent.Post 객체에서 사용할 이름과 타입을 지정
-							Ref("posts"). // Member 의 Edges 에서 지정한 이름( edge.To("post", Post.Type) )
-							Unique(),     // FK 설정
+		// ent.PostEdges 객체에서 사용할 이름과 타입을 지정(ent.post.go - Post.PostEdges)
+		edge.From("member", Member.Type).
+			// Member 의 Edges 에서 지정한 이름( edge.To("posts", Post.Type) )
+			Ref("posts").
+			// FK 설정
+			Unique(),
 		edge.To("comments", Comment.Type).
 			StorageKey(edge.Column("post_id")),
 	}

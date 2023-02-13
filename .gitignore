@@ -12,3 +12,6 @@
 ent/*
 !ent/schema
 !ent/generate.go
+
+# grpc pb file
+proto/v1/*/*.pb.go
