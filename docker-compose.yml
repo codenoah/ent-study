@@ -1,0 +1,16 @@
+services:
+  ent-study:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ent-study
+    working_dir: /home/ent-study
+    volumes:
+      - .:/home/ent-study
+    ports:
+      - "8080:8080"
+    links:
+      - "study-redis"
+  study-redis:
+    image: redis
+    container_name: study-redis

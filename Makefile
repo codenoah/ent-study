@@ -12,13 +12,14 @@ td-infra:
 	go test ./infra/... -v -coverprofile test-coverage.out
 	go tool cover -func test-coverage.out
 
-.PHONY: entity-create
-entity-create:
-	go run -mod=mod entgo.io/ent/cmd/ent init
 
-
-.PHONY: init-protobuf
-init-protobuf:
+.PHONY: protobuf-download
+protobuf-download:
 	go get -u google.golang.org/protobuf
 	go get -u github.com/golang/protobuf/protoc-gen-go
 	go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
+
+
+.PHONY: ent-gen
+ent-gen:
+	go generate ./ent
