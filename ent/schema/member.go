@@ -17,22 +17,13 @@ type Member struct {
 // Fields of the Member.
 func (Member) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("id").
-			StorageKey("member_id"),
+		field.Int("id").StorageKey("member_id"),
 		field.String("nickname"),
-		field.String("account_id"),
-		field.String("account_type"),
-		field.Time("created_at").
-			Comment("사용자 계정 생성 시간").
-			Default(time.Now).
-			Immutable(), // 불변 필드
-		field.Time("updated_at").
-			Comment("사용자 계정 수정 시간").
-			Optional().
-			UpdateDefault(time.Now),
-		field.Time("deleted_at").
-			Comment("사용자 계정 삭제 시간").
-			Optional(),
+		field.String("email").Unique(),
+		field.Bytes("password"),
+		field.Time("created_at").Default(time.Now).Immutable(),
+		field.Time("updated_at").Optional().UpdateDefault(time.Now),
+		field.Time("deleted_at").Optional(),
 	}
 }
 

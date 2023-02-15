@@ -5,6 +5,7 @@ import (
 	"ent-study/errs"
 	memberHandler "ent-study/interfaces/handler/web/member"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/pkg/errors"
 )
 
@@ -22,8 +23,14 @@ func NewWebHandler() *webHandler {
 
 func (w *webHandler) Run(memberApp app.MemberApplication) {
 	memberHandler := memberHandler.New(memberApp)
-	w.Get("/member", memberHandler.GetMember)
-	w.Post("/member", memberHandler.GetMember)
+	w.Get("/member/:id", memberHandler.GetMember)
+	w.Post("/member", memberHandler.JoinMember)
+
+	w.Use(recover.New(recover.Config{
+		Next: func(c *fiber.Ctx) bool {
+			return true
+		},
+	}))
 
 	w.Listen(":8080")
 }
@@ -41,7 +48,7 @@ func errorHandler(c *fiber.Ctx, err error) error {
 	}
 
 	// 서버에서 지정한 오류일 경우
-	var ce errs.Error
+	var ce *errs.Error
 	if errors.As(err, &ce) {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"code":    ce.Code(),
@@ -51,6 +58,6 @@ func errorHandler(c *fiber.Ctx, err error) error {
 
 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 		"code":    fiber.StatusInternalServerError,
-		"message": err,
+		"message": err.Error(),
 	})
 }
